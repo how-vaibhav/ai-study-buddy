@@ -1,99 +1,301 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { supabase } from '@/lib/auth'
-import { Menu, X, LogOut, BookOpen, Brain, FileText, Settings } from 'lucide-react'
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+import { gsap } from "gsap";
+import { RemoveScroll } from "react-remove-scroll";
+import { useTheme } from "next-themes";
+
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/auth";
+import {
+  Menu,
+  X,
+  LogOut,
+  BookOpen,
+  Brain,
+  FileText,
+  Sun,
+  Moon,
+  User,
+  Settings,
+} from "lucide-react";
 
 export function DashboardNav() {
-  const router = useRouter()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const router = useRouter();
+  const pathname = usePathname();
+  const { resolvedTheme, setTheme } = useTheme();
+
+  const [mounted, setMounted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const waveRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.push('/login')
-  }
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: BookOpen },
-    { href: '/study-planner', label: 'Study Planner', icon: Brain },
-    { href: '/doubt-solver', label: 'Doubt Solver', icon: FileText },
-    { href: '/notes-summarizer', label: 'Notes Summarizer', icon: FileText },
-  ]
+    { href: "/dashboard", label: "Dashboard", icon: BookOpen },
+    { href: "/study-planner", label: "Study Planner", icon: Brain },
+    { href: "/doubt-solver", label: "Doubt Solver", icon: FileText },
+    { href: "/notes-summarizer", label: "Notes Summarizer", icon: FileText },
+  ];
+
+  /* 🌊 SAFE wave animation */
+  useEffect(() => {
+    if (!waveRef.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    gsap.to(waveRef.current, {
+      x: "-12%",
+      duration: 18,
+      ease: "sine.inOut",
+      repeat: -1,
+      yoyo: true,
+    });
+  }, []);
+
+  /* 📱 Drawer animation */
+  useEffect(() => {
+    if (!drawerRef.current || !overlayRef.current) return;
+
+    if (mobileMenuOpen) {
+      gsap.to(overlayRef.current, { opacity: 1, duration: 0.25 });
+      gsap.fromTo(
+        drawerRef.current,
+        { x: "100%" },
+        { x: "0%", duration: 0.4, ease: "power3.out" },
+      );
+    } else {
+      gsap.to(drawerRef.current, { x: "100%", duration: 0.3 });
+      gsap.to(overlayRef.current, { opacity: 0, duration: 0.2 });
+    }
+  }, [mobileMenuOpen]);
 
   return (
-    <nav className="border-b bg-primary text-primary-foreground shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl">
-            <BookOpen size={24} />
-            <span className="hidden sm:inline">AI Study Buddy</span>
-          </Link>
+    <>
+      {/* ================= NAVBAR ================= */}
+      <nav
+        className="
+          sticky top-0 z-[50]
+          border-b
+          bg-gradient-to-r
+          from-indigo-100/95 via-white/95 to-blue-100/95
+          dark:from-[#0b1020]/95 dark:via-[#101a35]/95 dark:to-[#0b1020]/95
+          backdrop-blur-xl
+          border-indigo-200/40 dark:border-white/10
+        "
+      >
+        {/* 🌊 Wave (visual only) */}
+        <div
+          ref={waveRef}
+          className="
+            pointer-events-none
+            absolute inset-0 z-0
+            -left-[20%] w-[140%]
+            bg-gradient-to-r
+            from-indigo-500/30 via-purple-500/30 to-blue-500/30
+            blur-3xl
+          "
+        />
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex gap-1">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link key={item.href} href={item.href}>
-                  <Button
-                    variant="ghost"
-                    className="text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-                  >
-                    <Icon size={18} className="mr-2" />
-                    {item.label}
-                  </Button>
-                </Link>
-              )
-            })}
-          </div>
-
-          {/* Right side - Logout button and Mobile menu */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-              onClick={handleLogout}
-              title="Logout"
+        {/* CONTENT */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-3 font-bold"
             >
-              <LogOut size={20} />
-            </Button>
+              <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg">
+                <BookOpen size={18} />
+              </div>
+              <span className="hidden sm:inline text-lg text-foreground">
+                AI Study Buddy
+              </span>
+            </Link>
 
-            {/* Mobile menu toggle */}
-            <button
-              className="md:hidden text-primary-foreground"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center gap-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = pathname === item.href;
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant="ghost"
+                      className={`gap-2 ${
+                        active
+                          ? "bg-primary/15 text-primary"
+                          : "text-foreground/70 hover:text-foreground"
+                      }`}
+                    >
+                      <Icon size={16} />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Right */}
+            <div className="flex items-center gap-2">
+              {/* Theme toggle (SAFE) */}
+              {mounted && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() =>
+                    setTheme(resolvedTheme === "dark" ? "light" : "dark")
+                  }
+                >
+                  {resolvedTheme === "dark" ? (
+                    <Sun size={18} />
+                  ) : (
+                    <Moon size={18} />
+                  )}
+                </Button>
+              )}
+
+              {/* Profile */}
+              <div className="relative">
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 text-white font-semibold shadow-lg"
+                >
+                  U
+                </button>
+
+                {profileOpen && (
+                  <div className="absolute right-0 mt-2 w-44 glass-card z-[80]">
+                    <button
+                      onClick={() => router.push("/profile")}
+                      className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-muted"
+                    >
+                      <User size={16} /> Profile
+                    </button>
+                    <button
+                      onClick={() => router.push("/settings")}
+                      className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-muted"
+                    >
+                      <Settings size={16} /> Settings
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-destructive/10"
+                    >
+                      <LogOut size={16} /> Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* ✅ FIXED HAMBURGER */}
+              <button
+                className="
+                  md:hidden
+                  relative z-[60]
+                  p-2 rounded-lg
+                  bg-primary/15
+                  text-primary
+                  hover:bg-primary/25
+                "
+                onClick={() => setMobileMenuOpen(true)}
+              >
+                <Menu size={22} />
+              </button>
+            </div>
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden pb-4 space-y-2">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link key={item.href} href={item.href}>
+      {/* ================= MOBILE DRAWER ================= */}
+      {mobileMenuOpen && (
+        <RemoveScroll>
+          <div className="fixed inset-0 z-[100]">
+            {/* Overlay */}
+            <div
+              ref={overlayRef}
+              className="absolute inset-0 bg-black/50 opacity-0 z-[90]"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+
+            {/* Drawer */}
+            <div
+              ref={drawerRef}
+              className="absolute right-0 top-0 h-full w-72 bg-background shadow-2xl z-[100] flex flex-col"
+            >
+              <div className="flex items-center justify-between px-4 h-16 border-b">
+                <span className="font-semibold">Menu</span>
+                <button onClick={() => setMobileMenuOpen(false)}>
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="flex-1 px-3 py-4 space-y-1">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const active = pathname === item.href;
+                  return (
+                    <Link key={item.href} href={item.href}>
+                      <Button
+                        variant="ghost"
+                        className={`w-full justify-start gap-3 ${
+                          active
+                            ? "bg-primary/15 text-primary"
+                            : "text-muted-foreground"
+                        }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Icon size={18} />
+                        {item.label}
+                      </Button>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div className="p-4 border-t space-y-2">
+                {mounted && (
                   <Button
-                    variant="ghost"
-                    className="w-full justify-start text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-                    onClick={() => setMobileMenuOpen(false)}
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={() =>
+                      setTheme(resolvedTheme === "dark" ? "light" : "dark")
+                    }
                   >
-                    <Icon size={18} className="mr-2" />
-                    {item.label}
+                    {resolvedTheme === "dark" ? (
+                      <Sun size={16} />
+                    ) : (
+                      <Moon size={16} />
+                    )}
+                    Toggle Theme
                   </Button>
-                </Link>
-              )
-            })}
+                )}
+
+                <Button
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut size={16} />
+                  Sign out
+                </Button>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    </nav>
-  )
+        </RemoveScroll>
+      )}
+    </>
+  );
 }

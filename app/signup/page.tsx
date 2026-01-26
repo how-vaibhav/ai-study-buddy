@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -26,7 +27,6 @@ export default function SignupPage() {
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -38,7 +38,10 @@ export default function SignupPage() {
     delaySpeed: 1500,
   });
 
+  /* Entrance animation */
   useEffect(() => {
+    if (!cardRef.current) return;
+
     gsap.fromTo(
       cardRef.current,
       { opacity: 0, y: 40, scale: 0.96 },
@@ -54,7 +57,7 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.fullName || !formData.email || !formData.password) {
+    if (!formData.email || !formData.password) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -84,13 +87,9 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const result = await signUp(
-        formData.email,
-        formData.password,
-        formData.fullName,
-      );
+      const result = await signUp(formData.email, formData.password);
 
-      if (result.error) {
+      if (result?.error) {
         toast({
           title: "Error",
           description: result.error,
@@ -115,102 +114,117 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-background via-muted/30 to-background px-4">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-background via-muted/30 to-background">
       {/* Decorative parallax blobs */}
       <MouseParallax strength={0.04} enableOnTouchDevice={false}>
-        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
       </MouseParallax>
 
-      <Card
-        ref={cardRef}
-        className="relative w-full max-w-md border border-border/60 bg-background/80 backdrop-blur-xl shadow-xl"
-      >
-        <CardHeader className="space-y-3 text-center">
-          <CardTitle className="text-3xl font-bold tracking-tight">
-            Create your account
-          </CardTitle>
+      {/* TRUE CENTERING */}
+      <div className="grid min-h-screen place-items-center px-4">
+        <Card
+          ref={cardRef}
+          className="w-full max-w-md border border-border/60 bg-background/80 backdrop-blur-xl shadow-xl"
+        >
+          <CardHeader className="space-y-3 text-center">
+            <CardTitle className="text-3xl font-bold tracking-tight">
+              Create your account
+            </CardTitle>
 
-          <CardDescription className="text-sm">
-            <span className="text-primary font-medium">{text}</span>
-            <Cursor cursorStyle="|" />
-          </CardDescription>
+            <CardDescription className="text-sm">
+              <span className="font-medium text-primary">{text}</span>
+              <Cursor cursorStyle="|" />
+            </CardDescription>
 
-          <p className="text-xs text-muted-foreground">
-            Join <span className="font-medium">AI Study Buddy for Bharat</span>
-          </p>
-        </CardHeader>
+            <p className="text-xs text-muted-foreground">
+              Join{" "}
+              <span className="font-medium">AI Study Buddy for Bharat</span>
+            </p>
+          </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {[
-              {
-                id: "fullName",
-                label: "Full Name",
-                type: "text",
-                placeholder: "Your name",
-              },
-              {
-                id: "email",
-                label: "Email Address",
-                type: "email",
-                placeholder: "you@email.com",
-              },
-              {
-                id: "password",
-                label: "Password",
-                type: "password",
-                placeholder: "At least 6 characters",
-              },
-              {
-                id: "confirmPassword",
-                label: "Confirm Password",
-                type: "password",
-                placeholder: "Confirm password",
-              },
-            ].map((field) => (
-              <div key={field.id} className="space-y-1.5">
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div className="space-y-1.5">
                 <label
-                  htmlFor={field.id}
+                  htmlFor="email"
                   className="text-sm font-medium text-muted-foreground"
                 >
-                  {field.label}
+                  Email Address
                 </label>
                 <Input
-                  id={field.id}
-                  name={field.id}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                  value={(formData as any)[field.id]}
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@email.com"
+                  value={formData.email}
                   onChange={handleInputChange}
-                  className="transition focus-visible:ring-primary"
                   required
                 />
               </div>
-            ))}
 
-            <Button
-              type="submit"
-              className="w-full transition-all duration-300 hover:scale-[1.02]"
-              disabled={loading}
-            >
-              {loading ? "Creating account…" : "Create Account"}
-            </Button>
-          </form>
+              {/* Password */}
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium text-muted-foreground"
+                >
+                  Password
+                </label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="At least 6 characters"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
 
-          <div className="mt-6 text-center text-sm">
-            <span className="text-muted-foreground">
-              Already have an account?
-            </span>{" "}
-            <Link
-              href="/login"
-              className="font-medium text-primary hover:underline"
-            >
-              Sign in
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+              {/* Confirm Password */}
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-sm font-medium text-muted-foreground"
+                >
+                  Confirm Password
+                </label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Confirm password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full transition-all duration-300 hover:scale-[1.02]"
+                disabled={loading}
+              >
+                {loading ? "Creating account…" : "Create Account"}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center text-sm">
+              <span className="text-muted-foreground">
+                Already have an account?
+              </span>{" "}
+              <Link
+                href="/login"
+                className="font-medium text-primary hover:underline"
+              >
+                Sign in
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
