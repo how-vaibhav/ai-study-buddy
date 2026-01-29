@@ -506,7 +506,7 @@ export default function NotesSummarizerPage() {
               Notes Summarizer
             </h1>
           </div>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
             Convert raw notes into clean, exam-focused summaries.
           </p>
         </div>
@@ -572,7 +572,7 @@ export default function NotesSummarizerPage() {
                           className="flex items-center justify-between p-2 bg-emerald-50 rounded-lg border border-emerald-200"
                         >
                           <div className="flex items-center gap-2 min-w-0">
-                            <File className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                            <File className="w-4 h-4 text-emerald-600 shrink-0" />
                             <div className="min-w-0">
                               <p className="text-xs font-medium text-gray-700 truncate">
                                 {file.name}
@@ -585,7 +585,7 @@ export default function NotesSummarizerPage() {
                           <button
                             type="button"
                             onClick={() => removeFile(file.id)}
-                            className="flex-shrink-0 p-1 hover:bg-emerald-200 rounded transition"
+                            className="shrink-0 p-1 hover:bg-emerald-200 rounded transition"
                           >
                             <X className="w-4 h-4 text-emerald-600" />
                           </button>
@@ -600,7 +600,7 @@ export default function NotesSummarizerPage() {
                   placeholder="Or paste your notes here… (optional if files uploaded)"
                   value={formData.notes}
                   onChange={handleInputChange}
-                  className="w-full min-h-36 rounded-lg border border-emerald-200 bg-white/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full min-h-36 rounded-lg border border-emerald-200 dark:border-emerald-700 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-4 py-3 text-sm shadow-sm dark:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:ring-offset-0 dark:focus:ring-offset-0 hover:border-emerald-300 dark:hover:border-emerald-600"
                 />
 
                 <Input
@@ -614,7 +614,7 @@ export default function NotesSummarizerPage() {
                   name="examType"
                   value={formData.examType}
                   onChange={handleInputChange}
-                  className="w-full rounded-lg border border-emerald-200 bg-white/70 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500"
+                  className="w-full rounded-lg border border-emerald-200 dark:border-emerald-700 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 px-4 py-2 text-sm shadow-sm dark:shadow-lg transition-all duration-200 focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 hover:border-emerald-300 dark:hover:border-emerald-600"
                 >
                   <option value="">Select exam</option>
                   <option value="JEE Main">JEE Main</option>
@@ -840,10 +840,10 @@ export default function NotesSummarizerPage() {
                 </div>
               ))
             ) : (
-              <Card className="h-96 flex items-center justify-center glass-card border-emerald-200/60">
+              <Card className="h-96 flex items-center justify-center glass-card border-emerald-200/60 dark:border-emerald-800/40">
                 <div className="text-center">
-                  <BookOpen className="w-16 h-16 mx-auto mb-4 text-emerald-300" />
-                  <p className="text-gray-600 font-medium">
+                  <BookOpen className="w-16 h-16 mx-auto mb-4 text-emerald-300 dark:text-emerald-400" />
+                  <p className="text-gray-600 dark:text-gray-300 font-medium">
                     No summaries yet. Paste notes to begin ✨
                   </p>
                 </div>

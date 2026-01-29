@@ -28,6 +28,7 @@ import {
 import {
   LineChart,
   Line,
+  Area,
   BarChart,
   Bar,
   PieChart,
@@ -231,12 +232,34 @@ export default function DashboardPage() {
                   <XAxis dataKey="day" />
                   <YAxis />
                   <Tooltip />
+                  <defs>
+                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop
+                        offset="0%"
+                        stopColor="#6366f1"
+                        stopOpacity="0.18"
+                      />
+                      <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#8b5cf6" />
+                      <stop offset="100%" stopColor="#6366f1" />
+                    </linearGradient>
+                  </defs>
+                  <Area
+                    dataKey="hours"
+                    type="monotone"
+                    stroke="url(#lineGrad)"
+                    fill="url(#areaGrad)"
+                    strokeWidth={2}
+                    dot={{ fill: "#6366f1", r: 4 }}
+                  />
                   <Line
                     type="monotone"
                     dataKey="hours"
-                    stroke="#6366f1"
+                    stroke="url(#lineGrad)"
                     strokeWidth={2}
-                    dot={{ fill: "#6366f1", r: 5 }}
+                    dot={{ fill: "#6366f1", r: 4 }}
                   />
                 </LineChart>
               </ResponsiveContainer>

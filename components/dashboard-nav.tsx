@@ -24,6 +24,7 @@ import {
   HelpCircle,
   Bell,
   Mail,
+  MessageCircle,
 } from "lucide-react";
 
 export function DashboardNav() {
@@ -355,6 +356,18 @@ export function DashboardNav() {
                 >
                   <HelpCircle size={16} />
                   About
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={() => {
+                    router.push("/feedback");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <MessageCircle size={16} />
+                  Feedback
                 </Button>
 
                 <Button

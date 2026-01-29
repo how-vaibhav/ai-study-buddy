@@ -306,7 +306,7 @@ export default function DoubtSolverPage() {
               Ask Your Doubts
             </h1>
           </div>
-          <p className="text-gray-600 text-lg">
+          <p className="text-slate-600 dark:text-slate-400 text-lg">
             Clear, exam-focused explanations — instantly.
           </p>
         </div>
@@ -325,7 +325,7 @@ export default function DoubtSolverPage() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
                     Upload Reference Files (Optional)
                   </label>
                   <input
@@ -391,7 +391,7 @@ export default function DoubtSolverPage() {
                   placeholder="Type your question here…"
                   value={formData.question}
                   onChange={handleInputChange}
-                  className="w-full min-h-28 rounded-lg border border-purple-200 bg-white/70 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full min-h-28 rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-4 py-3 text-sm shadow-sm dark:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-0 dark:focus:ring-offset-0 hover:border-purple-300 dark:hover:border-purple-600"
                   required
                 />
 
@@ -400,14 +400,14 @@ export default function DoubtSolverPage() {
                   placeholder="Subject (optional)"
                   value={formData.subject}
                   onChange={handleInputChange}
-                  className="bg-white/70 border-purple-200"
+                  className="border-purple-200 dark:border-purple-700 focus-visible:border-purple-500 dark:focus-visible:border-purple-400 focus-visible:ring-purple-500/30 dark:focus-visible:ring-purple-400/30"
                 />
 
                 <select
                   name="examType"
                   value={formData.examType}
                   onChange={handleInputChange}
-                  className="w-full rounded-lg border border-purple-200 bg-white/70 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500"
+                  className="w-full rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 px-4 py-2 text-sm shadow-sm dark:shadow-lg transition-all duration-200 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 hover:border-purple-300 dark:hover:border-purple-600"
                 >
                   <option value="">Select exam</option>
                   <option value="JEE Main">JEE Main</option>
@@ -561,7 +561,7 @@ export default function DoubtSolverPage() {
               <Card className="h-96 flex items-center justify-center glass-card border-purple-200/60">
                 <div className="text-center">
                   <MessageCircle className="w-16 h-16 mx-auto mb-4 text-purple-300" />
-                  <p className="text-gray-600 font-medium">
+                  <p className="text-slate-600 dark:text-slate-400 font-medium">
                     Ask your first doubt to begin ✨
                   </p>
                 </div>

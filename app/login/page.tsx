@@ -19,12 +19,14 @@ import { signIn } from "@/lib/auth";
 import { AuthNav } from "@/components/auth-nav";
 import { motion } from "framer-motion";
 import gsap from "gsap";
+import { useWaterEffect } from "@/hooks/use-water-effect";
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useWaterEffect(containerRef);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -124,6 +126,11 @@ export default function LoginPage() {
       >
         {/* Animated background blobs */}
         <div className="absolute inset-0 overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full"
+            style={{ mixBlendMode: "screen" }}
+          />
           <div className="blob-1 absolute top-20 left-10 w-72 h-72 bg-purple-600/20 dark:bg-purple-500/15 rounded-full blur-3xl" />
           <div className="blob-2 absolute bottom-20 right-10 w-80 h-80 bg-blue-600/15 dark:bg-blue-500/10 rounded-full blur-3xl" />
           <div className="blob-3 absolute top-1/2 left-1/3 w-96 h-96 bg-indigo-600/15 dark:bg-indigo-500/10 rounded-full blur-3xl" />

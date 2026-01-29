@@ -18,16 +18,17 @@ import { AuthNav } from "@/components/auth-nav";
 
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
+import { useWaterEffect } from "@/hooks/use-water-effect";
 
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
   const cardRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useWaterEffect(containerRef);
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -88,7 +89,7 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.fullName || !formData.email || !formData.password) {
+    if (!formData.email || !formData.password) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -160,6 +161,11 @@ export default function SignupPage() {
       >
         {/* Animated background blobs */}
         <div className="absolute inset-0 overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full"
+            style={{ mixBlendMode: "screen" }}
+          />
           <div className="blob-1 absolute top-20 left-10 w-72 h-72 bg-purple-600/20 dark:bg-purple-500/15 rounded-full blur-3xl" />
           <div className="blob-2 absolute bottom-20 right-10 w-80 h-80 bg-blue-600/15 dark:bg-blue-500/10 rounded-full blur-3xl" />
           <div className="blob-3 absolute top-1/2 left-1/3 w-96 h-96 bg-indigo-600/15 dark:bg-indigo-500/10 rounded-full blur-3xl" />

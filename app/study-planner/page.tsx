@@ -357,13 +357,13 @@ export default function StudyPlannerPage() {
               Study Plan Generator
             </h1>
           </div>
-          <p className="text-lg text-gray-600 max-w-3xl">
+          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl">
             Create realistic, day-wise study plans with focused goals, revision
             buffers, and exam-oriented strategies.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
           {/* Form */}
           <motion.div
             className="lg:col-span-1"
@@ -397,7 +397,7 @@ export default function StudyPlannerPage() {
                       name="exam"
                       value={formData.exam}
                       onChange={handleInputChange}
-                      className="w-full rounded-lg border border-purple-200 bg-white/70 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500"
+                      className="w-full rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 px-4 py-2 text-sm shadow-sm dark:shadow-lg transition-all duration-200 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 hover:border-purple-300 dark:hover:border-purple-600"
                     >
                       {[
                         "JEE Advanced",
@@ -437,7 +437,7 @@ export default function StudyPlannerPage() {
                       name="difficulty"
                       value={formData.difficulty}
                       onChange={handleInputChange}
-                      className="w-full rounded-lg border border-purple-200 bg-white/70 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500"
+                      className="w-full rounded-lg border border-purple-200 dark:border-purple-700 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 px-4 py-2 text-sm shadow-sm dark:shadow-lg transition-all duration-200 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 hover:border-purple-300 dark:hover:border-purple-600"
                     >
                       <option value="3-4 hours">Easy (3–4 hrs/day)</option>
                       <option value="4-6 hours">Medium (4–6 hrs/day)</option>
@@ -497,7 +497,7 @@ export default function StudyPlannerPage() {
 
           {/* Results */}
           <motion.div
-            className="lg:col-span-2"
+            className="lg:col-span-3"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -533,7 +533,7 @@ export default function StudyPlannerPage() {
                 </Card>
 
                 {/* Day Cards Grid - 2 columns */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {plan.dailyRoutines.map((day, i) => (
                     <motion.div
                       key={i}
@@ -769,11 +769,11 @@ export default function StudyPlannerPage() {
             whileHover={{ scale: 1.03 }}
             className=""
           >
-            <Card className="glass-card border-purple-200/60 hover:shadow-lg transition">
+            <Card className="glass-card border-slate-200/60 dark:border-slate-700/40 hover:shadow-lg transition">
               <CardContent className="pt-6">
                 <Calendar className="w-8 h-8 text-purple-600 mb-3" />
                 <h3 className="font-semibold mb-2">Day-wise Breakdown</h3>
-                <p className="text-sm text-gray-600 mb-3">
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
                   Each day lists focused activities: theory, practice, and short
                   revision slots.
                 </p>

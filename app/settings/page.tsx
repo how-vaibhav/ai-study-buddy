@@ -237,7 +237,7 @@ export default function SettingsPage() {
               <h1 className="text-5xl font-bold tracking-tight bg-linear-to-r from-purple-700 to-blue-600 bg-clip-text text-transparent">
                 Settings
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-slate-600 dark:text-slate-400 mt-2">
                 Customize your experience and preferences
               </p>
             </div>
@@ -259,7 +259,7 @@ export default function SettingsPage() {
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                           activeTab === tab.id
                             ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
-                            : "text-gray-700 hover:bg-gray-100"
+                            : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50"
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -289,7 +289,7 @@ export default function SettingsPage() {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                         Daily Study Goal (hours)
                       </label>
                       <Input
@@ -300,15 +300,15 @@ export default function SettingsPage() {
                         onChange={(e) =>
                           handleSettingChange("dailyGoalHours", e.target.value)
                         }
-                        className="border-purple-200"
+                        className="border-slate-200 dark:border-slate-700"
                       />
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
                         Your target number of study hours per day
                       </p>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                         Preferred Language
                       </label>
                       <select
@@ -319,7 +319,7 @@ export default function SettingsPage() {
                             e.target.value,
                           )
                         }
-                        className="w-full rounded-lg border border-purple-200 bg-white/70 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500"
+                        className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 px-4 py-2 text-sm shadow-sm dark:shadow-lg transition-all duration-200 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 hover:border-slate-300 dark:hover:border-slate-600"
                       >
                         <option value="english">English</option>
                         <option value="hindi">Hindi</option>
@@ -328,8 +328,8 @@ export default function SettingsPage() {
                       </select>
                     </div>
 
-                    <div className="pt-4 border-t border-gray-200">
-                      <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                    <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4">
                         Theme Preference
                       </h3>
                       <div className="flex gap-4">
@@ -337,8 +337,8 @@ export default function SettingsPage() {
                           onClick={() => setTheme("light")}
                           className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition ${
                             resolvedTheme === "light"
-                              ? "border-purple-600 bg-purple-50"
-                              : "border-gray-200 hover:border-gray-300"
+                              ? "border-purple-600 bg-purple-50 dark:bg-purple-900/20"
+                              : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                           }`}
                         >
                           <Sun className="w-4 h-4" />
@@ -348,8 +348,8 @@ export default function SettingsPage() {
                           onClick={() => setTheme("dark")}
                           className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition ${
                             resolvedTheme === "dark"
-                              ? "border-purple-600 bg-purple-50"
-                              : "border-gray-200 hover:border-gray-300"
+                              ? "border-purple-600 bg-purple-50 dark:bg-purple-900/20"
+                              : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                           }`}
                         >
                           <Moon className="w-4 h-4" />
@@ -381,10 +381,10 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-3">
                           <Bell className="w-5 h-5 text-purple-600" />
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-slate-900 dark:text-slate-100">
                               Notification Reminders
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
                               Get notified about your study schedule
                             </p>
                           </div>
@@ -406,10 +406,10 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-3">
                           <Volume2 className="w-5 h-5 text-purple-600" />
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-slate-900 dark:text-slate-100">
                               Sound Effects
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
                               Enable notification sounds
                             </p>
                           </div>
@@ -431,10 +431,10 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-3">
                           <Clock className="w-5 h-5 text-purple-600" />
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-slate-900 dark:text-slate-100">
                               Daily Reminder
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
                               Remind me to study at a specific time
                             </p>
                           </div>
@@ -455,7 +455,7 @@ export default function SettingsPage() {
 
                     {settings.dailyReminder && (
                       <div className="space-y-2 p-3 rounded-lg bg-blue-50 border border-blue-200">
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                           Reminder Time
                         </label>
                         <Input
@@ -473,10 +473,10 @@ export default function SettingsPage() {
                       <div className="flex items-center gap-3">
                         <Zap className="w-5 h-5 text-purple-600" />
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-slate-900 dark:text-slate-100">
                             Focus Mode
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-slate-600 dark:text-slate-400">
                             Minimize distractions while studying
                           </p>
                         </div>
@@ -510,7 +510,7 @@ export default function SettingsPage() {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                         Font Size
                       </label>
                       <select
@@ -531,10 +531,10 @@ export default function SettingsPage() {
                       <div className="flex items-center gap-3">
                         <Eye className="w-5 h-5 text-purple-600" />
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-slate-900 dark:text-slate-100">
                             Compact View
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-slate-600 dark:text-slate-400">
                             Show more content in less space
                           </p>
                         </div>
@@ -553,10 +553,10 @@ export default function SettingsPage() {
                       <div className="flex items-center gap-3">
                         <Zap className="w-5 h-5 text-purple-600" />
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-slate-900 dark:text-slate-100">
                             Animations & Effects
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-slate-600 dark:text-slate-400">
                             Enable smooth animations
                           </p>
                         </div>
@@ -597,10 +597,10 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-3">
                           <CheckCircle className="w-5 h-5 text-purple-600" />
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-slate-900 dark:text-slate-100">
                               Data Collection
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
                               Allow usage data collection for improvements
                             </p>
                           </div>
@@ -622,10 +622,10 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-3">
                           <Eye className="w-5 h-5 text-purple-600" />
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-slate-900 dark:text-slate-100">
                               Analytics Tracking
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
                               Track my learning analytics
                             </p>
                           </div>
@@ -647,10 +647,10 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-3">
                           <Bell className="w-5 h-5 text-purple-600" />
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-slate-900 dark:text-slate-100">
                               Email Updates
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
                               Receive email newsletters and updates
                             </p>
                           </div>
@@ -669,8 +669,8 @@ export default function SettingsPage() {
                       </div>
                     </div>
 
-                    <div className="border-t border-gray-200 pt-6 space-y-4">
-                      <h3 className="text-sm font-semibold text-gray-900">
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-6 space-y-4">
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                         Data Management
                       </h3>
 
