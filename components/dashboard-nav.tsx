@@ -101,6 +101,36 @@ export function DashboardNav() {
     }
   }, [mobileMenuOpen]);
 
+  /* Close drawer when clicking anywhere outside it (fallback outside-click handler) */
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      const drawer = drawerRef.current;
+      if (!drawer) return;
+
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      // Close if click is outside the drawer
+      if (!drawer.contains(target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    // Use a small delay to ensure the overlay onClick fires first
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <>
       {/* ================= NAVBAR ================= */}
@@ -273,11 +303,11 @@ export function DashboardNav() {
       {/* ================= MOBILE DRAWER ================= */}
       {mobileMenuOpen && (
         <RemoveScroll>
-          <div className="fixed inset-0 z-100">
+          <div className="fixed inset-0 z-100 pointer-events-auto">
             {/* Overlay */}
             <div
               ref={overlayRef}
-              className="absolute inset-0 bg-black/50 opacity-0 z-90"
+              className="absolute inset-0 bg-black/50 opacity-0 z-90 pointer-events-auto cursor-pointer"
               onClick={() => setMobileMenuOpen(false)}
             />
 

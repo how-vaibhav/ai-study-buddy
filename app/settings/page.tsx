@@ -91,6 +91,14 @@ export default function SettingsPage() {
       { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
     );
 
+    // Focus container without scrolling to prevent Next's auto-scroll behavior
+    try {
+      containerRef.current?.focus?.({ preventScroll: true } as FocusOptions);
+    } catch (e) {
+      // older browsers may not support preventScroll — still fine
+      containerRef.current?.focus?.();
+    }
+
     // Load settings from localStorage
     const savedSettings = localStorage.getItem("appSettings");
     if (savedSettings) {
@@ -222,6 +230,7 @@ export default function SettingsPage() {
     <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900">
       <motion.div
         ref={containerRef}
+        tabIndex={-1}
         className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
         initial="hidden"
         animate="visible"
@@ -377,7 +386,7 @@ export default function SettingsPage() {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                         <div className="flex items-center gap-3">
                           <Bell className="w-5 h-5 text-purple-600" />
                           <div>
@@ -398,11 +407,11 @@ export default function SettingsPage() {
                               e.target.checked,
                             )
                           }
-                          className="w-5 h-5 rounded"
+                          className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                         />
                       </div>
 
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                         <div className="flex items-center gap-3">
                           <Volume2 className="w-5 h-5 text-purple-600" />
                           <div>
@@ -423,11 +432,11 @@ export default function SettingsPage() {
                               e.target.checked,
                             )
                           }
-                          className="w-5 h-5 rounded"
+                          className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                         />
                       </div>
 
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                         <div className="flex items-center gap-3">
                           <Clock className="w-5 h-5 text-purple-600" />
                           <div>
@@ -448,13 +457,13 @@ export default function SettingsPage() {
                               e.target.checked,
                             )
                           }
-                          className="w-5 h-5 rounded"
+                          className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                         />
                       </div>
                     </div>
 
                     {settings.dailyReminder && (
-                      <div className="space-y-2 p-3 rounded-lg bg-blue-50 border border-blue-200">
+                      <div className="space-y-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/40">
                         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                           Reminder Time
                         </label>
@@ -464,12 +473,12 @@ export default function SettingsPage() {
                           onChange={(e) =>
                             handleSettingChange("reminderTime", e.target.value)
                           }
-                          className="border-blue-200"
+                          className="border-blue-200 dark:border-blue-700 dark:bg-slate-800 dark:text-slate-100"
                         />
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                       <div className="flex items-center gap-3">
                         <Zap className="w-5 h-5 text-purple-600" />
                         <div>
@@ -487,7 +496,7 @@ export default function SettingsPage() {
                         onChange={(e) =>
                           handleSettingChange("focusMode", e.target.checked)
                         }
-                        className="w-5 h-5 rounded"
+                        className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                       />
                     </div>
                   </CardContent>
@@ -518,7 +527,7 @@ export default function SettingsPage() {
                         onChange={(e) =>
                           handleSettingChange("fontSize", e.target.value)
                         }
-                        className="w-full rounded-lg border border-purple-200 bg-white/70 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500"
+                        className="w-full rounded-lg border border-purple-200 bg-white/70 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500"
                       >
                         <option value="small">Small</option>
                         <option value="medium">Medium</option>
@@ -527,7 +536,7 @@ export default function SettingsPage() {
                       </select>
                     </div>
 
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                       <div className="flex items-center gap-3">
                         <Eye className="w-5 h-5 text-purple-600" />
                         <div>
@@ -545,11 +554,11 @@ export default function SettingsPage() {
                         onChange={(e) =>
                           handleSettingChange("compactView", e.target.checked)
                         }
-                        className="w-5 h-5 rounded"
+                        className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                       <div className="flex items-center gap-3">
                         <Zap className="w-5 h-5 text-purple-600" />
                         <div>
@@ -570,7 +579,7 @@ export default function SettingsPage() {
                             e.target.checked,
                           )
                         }
-                        className="w-5 h-5 rounded"
+                        className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                       />
                     </div>
                   </CardContent>
@@ -593,7 +602,7 @@ export default function SettingsPage() {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                         <div className="flex items-center gap-3">
                           <CheckCircle className="w-5 h-5 text-purple-600" />
                           <div>
@@ -614,11 +623,11 @@ export default function SettingsPage() {
                               e.target.checked,
                             )
                           }
-                          className="w-5 h-5 rounded"
+                          className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                         />
                       </div>
 
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                         <div className="flex items-center gap-3">
                           <Eye className="w-5 h-5 text-purple-600" />
                           <div>
@@ -639,11 +648,11 @@ export default function SettingsPage() {
                               e.target.checked,
                             )
                           }
-                          className="w-5 h-5 rounded"
+                          className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                         />
                       </div>
 
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 border border-purple-200/50">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200/50 dark:border-purple-700/40">
                         <div className="flex items-center gap-3">
                           <Bell className="w-5 h-5 text-purple-600" />
                           <div>
@@ -664,7 +673,7 @@ export default function SettingsPage() {
                               e.target.checked,
                             )
                           }
-                          className="w-5 h-5 rounded"
+                          className="w-5 h-5 rounded accent-purple-600 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                         />
                       </div>
                     </div>

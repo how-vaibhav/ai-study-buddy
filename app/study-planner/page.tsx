@@ -749,35 +749,37 @@ export default function StudyPlannerPage() {
 
       {/* Features Section - improved layout & animation */}
       <motion.section
-        className="mt-20"
+        className="mt-20 mx-4 sm:mx-6 lg:mx-8"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
       >
         <div className="mb-8">
-          <h2 className="text-3xl font-bold">What You’ll Get</h2>
+          <h2 className="text-3xl font-bold">What You'll Get</h2>
           <p className="text-muted-foreground mt-2 max-w-2xl">
             A concise summary of what the generated study plan includes and why
             it helps you prepare efficiently.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
           <motion.div
             variants={cardVariants}
             whileHover={{ scale: 1.03 }}
             className=""
           >
-            <Card className="glass-card border-slate-200/60 dark:border-slate-700/40 hover:shadow-lg transition">
-              <CardContent className="pt-6">
+            <Card className="glass-card border-purple-200/60 dark:border-purple-700/40 hover:shadow-lg transition h-full">
+              <CardContent className="pt-6 pb-5 h-full flex flex-col">
                 <Calendar className="w-8 h-8 text-purple-600 mb-3" />
-                <h3 className="font-semibold mb-2">Day-wise Breakdown</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                <h3 className="font-semibold mb-2 text-sm">
+                  Day-wise Breakdown
+                </h3>
+                <p className="text-sm text-slate-700 dark:text-slate-200 mb-3 flex-grow leading-relaxed">
                   Each day lists focused activities: theory, practice, and short
                   revision slots.
                 </p>
-                <ul className="text-sm text-muted-foreground list-disc list-inside">
+                <ul className="text-sm text-slate-700 dark:text-slate-300 list-disc list-inside space-y-1">
                   <li>Daily learning targets</li>
                   <li>Short reviews and checkpoints</li>
                 </ul>
@@ -786,15 +788,15 @@ export default function StudyPlannerPage() {
           </motion.div>
 
           <motion.div variants={cardVariants} whileHover={{ scale: 1.03 }}>
-            <Card className="glass-card border-purple-200/60 hover:shadow-lg transition">
-              <CardContent className="pt-6">
-                <Target className="w-8 h-8 text-purple-600 mb-3" />
-                <h3 className="font-semibold mb-2">Focused Goals</h3>
-                <p className="text-sm text-gray-600 mb-3">
+            <Card className="glass-card border-blue-200/60 dark:border-blue-700/40 hover:shadow-lg transition h-full">
+              <CardContent className="pt-6 pb-5 h-full flex flex-col">
+                <Target className="w-8 h-8 text-blue-600 mb-3" />
+                <h3 className="font-semibold mb-2 text-sm">Focused Goals</h3>
+                <p className="text-sm text-slate-700 dark:text-slate-200 mb-3 flex-grow leading-relaxed">
                   Clarity on priority topics and measurable milestones so you
                   know what to complete each week.
                 </p>
-                <ul className="text-sm text-muted-foreground list-disc list-inside">
+                <ul className="text-sm text-slate-700 dark:text-slate-300 list-disc list-inside space-y-1">
                   <li>Topic prioritization</li>
                   <li>Milestone reminders</li>
                 </ul>
@@ -803,15 +805,15 @@ export default function StudyPlannerPage() {
           </motion.div>
 
           <motion.div variants={cardVariants} whileHover={{ scale: 1.03 }}>
-            <Card className="glass-card border-purple-200/60 hover:shadow-lg transition">
-              <CardContent className="pt-6">
-                <Zap className="w-8 h-8 text-purple-600 mb-3" />
-                <h3 className="font-semibold mb-2">Practical Tips</h3>
-                <p className="text-sm text-gray-600 mb-3">
+            <Card className="glass-card border-emerald-200/60 dark:border-emerald-700/40 hover:shadow-lg transition h-full">
+              <CardContent className="pt-6 pb-5 h-full flex flex-col">
+                <Zap className="w-8 h-8 text-emerald-600 mb-3" />
+                <h3 className="font-semibold mb-2 text-sm">Practical Tips</h3>
+                <p className="text-sm text-slate-700 dark:text-slate-200 mb-3 flex-grow leading-relaxed">
                   Actionable study techniques and quick strategies tailored to
                   your exam type.
                 </p>
-                <ul className="text-sm text-muted-foreground list-disc list-inside">
+                <ul className="text-sm text-slate-700 dark:text-slate-300 list-disc list-inside space-y-1">
                   <li>Problem-solving heuristics</li>
                   <li>Smart revision tactics</li>
                 </ul>
@@ -820,15 +822,15 @@ export default function StudyPlannerPage() {
           </motion.div>
 
           <motion.div variants={cardVariants} whileHover={{ scale: 1.03 }}>
-            <Card className="glass-card border-purple-200/60 hover:shadow-lg transition">
-              <CardContent className="pt-6">
-                <Clock className="w-8 h-8 text-purple-600 mb-3" />
-                <h3 className="font-semibold mb-2">Time Management</h3>
-                <p className="text-sm text-gray-600 mb-3">
+            <Card className="glass-card border-amber-200/60 dark:border-amber-700/40 hover:shadow-lg transition h-full">
+              <CardContent className="pt-6 pb-5 h-full flex flex-col">
+                <Clock className="w-8 h-8 text-amber-600 mb-3" />
+                <h3 className="font-semibold mb-2 text-sm">Time Management</h3>
+                <p className="text-sm text-slate-700 dark:text-slate-200 mb-3 flex-grow leading-relaxed">
                   Realistic daily schedules that balance focused study and
                   recovery to avoid burnout.
                 </p>
-                <ul className="text-sm text-muted-foreground list-disc list-inside">
+                <ul className="text-sm text-slate-700 dark:text-slate-300 list-disc list-inside space-y-1">
                   <li>Balanced daily hours</li>
                   <li>Built-in recovery slots</li>
                 </ul>
@@ -837,6 +839,9 @@ export default function StudyPlannerPage() {
           </motion.div>
         </div>
       </motion.section>
+
+      {/* Footer spacing */}
+      <div className="h-20" />
 
       {/* Detail Modal */}
       <Dialog open={showDetailModal} onOpenChange={setShowDetailModal}>
