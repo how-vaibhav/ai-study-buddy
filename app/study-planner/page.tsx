@@ -147,79 +147,93 @@ export default function StudyPlannerPage() {
     if (!plan) return;
 
     try {
-      const { jsPDF } = await import("jspdf");
+      const html2pdf = (await import("html2pdf.js")).default;
 
-      const pdf = new jsPDF();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const margin = 15;
-      const maxWidth = pageWidth - 2 * margin;
-      let currentY = margin;
+      // Convert markdown to styled HTML matching the display
+      const convertMarkdownToStyledHTML = (markdown: string): string => {
+        let html = markdown;
 
-      // Title
-      pdf.setFontSize(18);
-      pdf.setTextColor(102, 126, 234);
-      pdf.text(title, margin, currentY);
-      currentY += 12;
+        // Headers
+        html = html.replace(/^#### (.*$)/gim, '<h4 style="font-size: 16px; font-weight: bold; color: #9333ea; margin-top: 12px; margin-bottom: 4px;">$1</h4>');
+        html = html.replace(/^### (.*$)/gim, '<h3 style="font-size: 18px; font-weight: bold; color: #9333ea; margin-top: 16px; margin-bottom: 8px;">$1</h3>');
+        html = html.replace(/^## (.*$)/gim, '<h2 style="font-size: 20px; font-weight: bold; color: #7c3aed; margin-top: 20px; margin-bottom: 8px;">$1</h2>');
+        html = html.replace(/^# (.*$)/gim, '<h1 style="font-size: 24px; font-weight: bold; color: #7c3aed; margin-top: 24px; margin-bottom: 12px;">$1</h1>');
 
-      // Generated date
-      pdf.setFontSize(10);
-      pdf.setTextColor(136, 136, 136);
-      pdf.text(
-        `Generated on ${new Date().toLocaleDateString()}`,
-        margin,
-        currentY,
-      );
-      currentY += 10;
+        // Bold and Italic
+        html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong style="font-weight: bold;"><em style="font-style: italic;">$1</em></strong>');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: bold; color: #111827;">$1</strong>');
+        html = html.replace(/\*(.*?)\*/g, '<em style="font-style: italic; color: #374151;">$1</em>');
 
-      // General Info Section
-      pdf.setFontSize(14);
-      pdf.setTextColor(102, 126, 234);
-      pdf.text("General Information", margin, currentY);
-      currentY += 8;
+        // Code blocks and inline code
+        html = html.replace(/```([\s\S]*?)```/g, '<pre style="background-color: #111827; color: #a78bfa; padding: 12px 16px; border-radius: 4px; font-family: monospace; font-size: 14px; overflow-x: auto; margin: 12px 0;"><code>$1</code></pre>');
+        html = html.replace(/`([^`]+)`/g, '<code style="background-color: #f3e8ff; color: #581c87; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 14px;">$1</code>');
 
-      pdf.setFontSize(11);
-      pdf.setTextColor(51, 51, 51);
-      const generalLines = pdf.splitTextToSize(plan.generalInfo, maxWidth);
-      generalLines.forEach((line: string) => {
-        if (currentY > pageHeight - margin - 10) {
-          pdf.addPage();
-          currentY = margin;
-        }
-        pdf.text(line, margin, currentY);
-        currentY += 5;
-      });
+        // Lists
+        html = html.replace(/^\d+\.\s+(.*)$/gim, '<li style="color: #374151; margin-left: 8px; line-height: 1.625; margin-bottom: 4px;">$1</li>');
+        html = html.replace(/^[-*]\s+(.*)$/gim, '<li style="color: #374151; margin-left: 8px; line-height: 1.625; margin-bottom: 4px;">$1</li>');
 
-      currentY += 5;
+        // Blockquotes
+        html = html.replace(/^&gt;\s?(.*)$/gim, '<blockquote style="border-left: 4px solid #a855f7; padding-left: 16px; padding-top: 8px; padding-bottom: 8px; margin: 12px 0; background-color: rgba(243, 232, 255, 0.5); font-style: italic; color: #374151;">$1</blockquote>');
 
-      // Daily Routines
-      plan.dailyRoutines.forEach((day, index) => {
-        if (currentY > pageHeight - margin - 20) {
-          pdf.addPage();
-          currentY = margin;
-        }
-
-        pdf.setFontSize(13);
-        pdf.setTextColor(102, 126, 234);
-        pdf.text(`Day ${index + 1}`, margin, currentY);
-        currentY += 8;
-
-        pdf.setFontSize(10);
-        pdf.setTextColor(51, 51, 51);
-        const dayLines = pdf.splitTextToSize(day.toString(), maxWidth);
-        dayLines.forEach((line: string) => {
-          if (currentY > pageHeight - margin - 10) {
-            pdf.addPage();
-            currentY = margin;
-          }
-          pdf.text(line, margin, currentY);
-          currentY += 5;
+        // Wrap lists in ul tags
+        html = html.replace(/(<li[^>]*>.*?<\/li>\s*)+/g, (match) => {
+          return '<ul style="list-style-type: disc; list-style-position: inside; margin-bottom: 12px; margin-left: 8px; padding-left: 8px;">' + match + '</ul>';
         });
 
-        currentY += 8;
-      });
+        // Paragraphs
+        const lines = html.split('\n');
+        html = lines.map(line => {
+          line = line.trim();
+          if (line && !line.startsWith('<') && line.indexOf('</') === -1) {
+            return `<p style="color: #374151; line-height: 1.625; margin-bottom: 12px;">${line}</p>`;
+          }
+          return line;
+        }).join('\n');
 
-      pdf.save(`${title.replace(/\s+/g, "-")}.pdf`);
+        return html;
+      };
+
+      const generalInfoHTML = convertMarkdownToStyledHTML(plan.generalInfo);
+      
+      const dailyRoutinesHTML = plan.dailyRoutines.map((day, index) => {
+        const dayContentHTML = convertMarkdownToStyledHTML(day.content);
+        return `
+          <div style="margin-top: 24px; page-break-inside: avoid;">
+            <h2 style="color: #7c3aed; font-size: 18px; font-weight: bold; margin-bottom: 12px;">
+              Day ${day.dayNumber}: ${day.title}
+            </h2>
+            <div style="padding-left: 16px;">
+              ${dayContentHTML}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const htmlContent = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;">
+          <h1 style="color: #7c3aed; font-size: 28px; font-weight: bold; margin-bottom: 10px;">${title}</h1>
+          <p style="color: #888; font-size: 12px; margin: 5px 0;">Generated: ${new Date().toLocaleDateString()}</p>
+          
+          <div style="margin-top: 24px;">
+            <h2 style="color: #7c3aed; font-size: 20px; font-weight: bold; margin-bottom: 12px;">📖 General Information</h2>
+            <div style="background: linear-gradient(to bottom right, #faf5ff, #dbeafe); padding: 24px; border-radius: 8px; border: 1px solid rgba(168, 85, 247, 0.4); margin-bottom: 24px;">
+              ${generalInfoHTML}
+            </div>
+          </div>
+
+          ${dailyRoutinesHTML}
+        </div>
+      `;
+
+      const options = {
+        margin: 0.5,
+        filename: `${title.replace(/\s+/g, "-")}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'in' as const, format: 'a4' as const, orientation: 'portrait' as const }
+      };
+
+      await html2pdf().set(options).from(htmlContent).save();
 
       toast({
         title: "Downloaded",
@@ -588,81 +602,123 @@ export default function StudyPlannerPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="rounded-xl border border-purple-200/40 dark:border-purple-500/30 bg-linear-to-br from-purple-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 p-6">
-                      <div className="text-gray-800 dark:text-gray-100 prose dark:prose-invert max-w-none">
+                    <div className="rounded-xl border border-purple-200/40 bg-linear-to-br from-purple-50 to-blue-50 p-6">
+                      <div className="text-gray-800 markdown-content">
                         <ReactMarkdown
                           components={{
                             h1: ({ node, ...props }) => (
                               <h1
-                                className="text-3xl font-bold text-purple-800 dark:text-purple-200 mt-6 mb-3 first:mt-0"
+                                className="text-2xl font-bold text-purple-700 mt-6 mb-3"
                                 {...props}
                               />
                             ),
                             h2: ({ node, ...props }) => (
                               <h2
-                                className="text-2xl font-bold text-purple-700 dark:text-purple-300 mt-5 mb-2"
+                                className="text-xl font-bold text-purple-700 mt-5 mb-2"
                                 {...props}
                               />
                             ),
                             h3: ({ node, ...props }) => (
                               <h3
-                                className="text-xl font-bold text-purple-600 dark:text-purple-400 mt-4 mb-2"
+                                className="text-lg font-bold text-purple-600 mt-4 mb-2"
+                                {...props}
+                              />
+                            ),
+                            h4: ({ node, ...props }) => (
+                              <h4
+                                className="text-base font-bold text-purple-600 mt-3 mb-1"
                                 {...props}
                               />
                             ),
                             p: ({ node, ...props }) => (
                               <p
-                                className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3"
-                                {...props}
-                              />
-                            ),
-                            ul: ({ node, ...props }) => (
-                              <ul
-                                className="list-disc list-inside space-y-1 my-3 ml-2"
-                                {...props}
-                              />
-                            ),
-                            ol: ({ node, ...props }) => (
-                              <ol
-                                className="list-decimal list-inside space-y-1 my-3 ml-2"
-                                {...props}
-                              />
-                            ),
-                            li: ({ node, ...props }) => (
-                              <li
-                                className="text-gray-700 dark:text-gray-300 ml-0"
-                                {...props}
-                              />
-                            ),
-                            code: (props: any) =>
-                              props.inline ? (
-                                <code
-                                  className="bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded text-purple-900 dark:text-purple-100 font-mono text-sm"
-                                  {...props}
-                                />
-                              ) : (
-                                <code
-                                  className="block bg-purple-900/30 text-purple-100 p-4 rounded-lg my-2 overflow-x-auto font-mono text-sm"
-                                  {...props}
-                                />
-                              ),
-                            blockquote: ({ node, ...props }) => (
-                              <blockquote
-                                className="border-l-4 border-purple-600 pl-4 italic text-gray-600 dark:text-gray-400 my-3"
+                                className="text-gray-700 mb-3 leading-relaxed"
                                 {...props}
                               />
                             ),
                             strong: ({ node, ...props }) => (
                               <strong
-                                className="font-bold text-purple-700 dark:text-purple-300"
+                                className="font-bold text-gray-900"
                                 {...props}
                               />
                             ),
                             em: ({ node, ...props }) => (
                               <em
-                                className="italic text-purple-600 dark:text-purple-400"
+                                className="italic text-gray-700"
                                 {...props}
                               />
+                            ),
+                            ul: ({ node, ...props }) => (
+                              <ul
+                                className="list-disc list-inside mb-3 ml-2 space-y-1"
+                                {...props}
+                              />
+                            ),
+                            ol: ({ node, ...props }) => (
+                              <ol
+                                className="list-decimal list-inside mb-3 ml-2 space-y-1"
+                                {...props}
+                              />
+                            ),
+                            li: ({ node, ...props }) => (
+                              <li className="text-gray-700" {...props} />
+                            ),
+                            blockquote: ({ node, ...props }) => (
+                              <blockquote
+                                className="border-l-4 border-purple-500 pl-4 py-2 my-3 bg-purple-50/50 italic text-gray-700"
+                                {...props}
+                              />
+                            ),
+                            table: ({ node, ...props }) => (
+                              <table
+                                className="w-full border-collapse my-4 border border-purple-300"
+                                {...props}
+                              />
+                            ),
+                            thead: ({ node, ...props }) => (
+                              <thead className="bg-purple-100" {...props} />
+                            ),
+                            tbody: ({ node, ...props }) => (
+                              <tbody {...props} />
+                            ),
+                            tr: ({ node, ...props }) => (
+                              <tr
+                                className="border border-purple-300"
+                                {...props}
+                              />
+                            ),
+                            th: ({ node, ...props }) => (
+                              <th
+                                className="border border-purple-300 px-3 py-2 text-left font-bold text-gray-900"
+                                {...props}
+                              />
+                            ),
+                            td: ({ node, ...props }) => (
+                              <td
+                                className="border border-purple-300 px-3 py-2 text-gray-700"
+                                {...props}
+                              />
+                            ),
+                            code: ({ node, inline, ...props }: any) =>
+                              inline ? (
+                                <code
+                                  className="bg-purple-100 text-purple-900 px-2 py-1 rounded font-mono text-sm"
+                                  {...props}
+                                />
+                              ) : (
+                                <code
+                                  className="bg-gray-900 text-purple-300 px-4 py-3 rounded font-mono text-sm block overflow-x-auto my-3"
+                                  {...props}
+                                />
+                              ),
+                            pre: ({ node, ...props }) => (
+                              <pre
+                                className="bg-gray-900 text-purple-300 px-4 py-3 rounded font-mono text-sm overflow-x-auto my-3"
+                                {...props}
+                              />
+                            ),
+                            hr: () => (
+                              <hr className="my-4 border-purple-300" />
                             ),
                           }}
                         >
@@ -860,50 +916,122 @@ export default function StudyPlannerPage() {
                 </DialogDescription>
               </DialogHeader>
               <div className="mt-4 space-y-4">
-                <div className="prose dark:prose-invert max-w-none">
+                <div className="bg-linear-to-br from-purple-50 to-blue-50 rounded-lg p-6 border border-purple-200/40 markdown-content">
                   <ReactMarkdown
                     components={{
                       h1: ({ node, ...props }) => (
                         <h1
-                          className="text-2xl font-bold text-purple-800 dark:text-purple-200 mt-4 mb-2 first:mt-0"
+                          className="text-2xl font-bold text-purple-700 mt-6 mb-3"
                           {...props}
                         />
                       ),
                       h2: ({ node, ...props }) => (
                         <h2
-                          className="text-xl font-bold text-purple-700 dark:text-purple-300 mt-3 mb-2"
+                          className="text-xl font-bold text-purple-700 mt-5 mb-2"
                           {...props}
                         />
                       ),
                       h3: ({ node, ...props }) => (
                         <h3
-                          className="text-lg font-bold text-purple-600 dark:text-purple-400 mt-2 mb-1"
+                          className="text-lg font-bold text-purple-600 mt-4 mb-2"
+                          {...props}
+                        />
+                      ),
+                      h4: ({ node, ...props }) => (
+                        <h4
+                          className="text-base font-bold text-purple-600 mt-3 mb-1"
                           {...props}
                         />
                       ),
                       p: ({ node, ...props }) => (
                         <p
-                          className="text-gray-700 dark:text-gray-300 leading-relaxed mb-2"
-                          {...props}
-                        />
-                      ),
-                      ul: ({ node, ...props }) => (
-                        <ul
-                          className="list-disc list-inside space-y-1 my-2 ml-2"
-                          {...props}
-                        />
-                      ),
-                      li: ({ node, ...props }) => (
-                        <li
-                          className="text-gray-700 dark:text-gray-300"
+                          className="text-gray-700 mb-3 leading-relaxed"
                           {...props}
                         />
                       ),
                       strong: ({ node, ...props }) => (
                         <strong
-                          className="font-bold text-purple-700 dark:text-purple-300"
+                          className="font-bold text-gray-900"
                           {...props}
                         />
+                      ),
+                      em: ({ node, ...props }) => (
+                        <em
+                          className="italic text-gray-700"
+                          {...props}
+                        />
+                      ),
+                      ul: ({ node, ...props }) => (
+                        <ul
+                          className="list-disc list-inside mb-3 ml-2 space-y-1"
+                          {...props}
+                        />
+                      ),
+                      ol: ({ node, ...props }) => (
+                        <ol
+                          className="list-decimal list-inside mb-3 ml-2 space-y-1"
+                          {...props}
+                        />
+                      ),
+                      li: ({ node, ...props }) => (
+                        <li className="text-gray-700" {...props} />
+                      ),
+                      blockquote: ({ node, ...props }) => (
+                        <blockquote
+                          className="border-l-4 border-purple-500 pl-4 py-2 my-3 bg-purple-50/50 italic text-gray-700"
+                          {...props}
+                        />
+                      ),
+                      table: ({ node, ...props }) => (
+                        <table
+                          className="w-full border-collapse my-4 border border-purple-300"
+                          {...props}
+                        />
+                      ),
+                      thead: ({ node, ...props }) => (
+                        <thead className="bg-purple-100" {...props} />
+                      ),
+                      tbody: ({ node, ...props }) => (
+                        <tbody {...props} />
+                      ),
+                      tr: ({ node, ...props }) => (
+                        <tr
+                          className="border border-purple-300"
+                          {...props}
+                        />
+                      ),
+                      th: ({ node, ...props }) => (
+                        <th
+                          className="border border-purple-300 px-3 py-2 text-left font-bold text-gray-900"
+                          {...props}
+                        />
+                      ),
+                      td: ({ node, ...props }) => (
+                        <td
+                          className="border border-purple-300 px-3 py-2 text-gray-700"
+                          {...props}
+                        />
+                      ),
+                      code: ({ node, inline, ...props }: any) =>
+                        inline ? (
+                          <code
+                            className="bg-purple-100 text-purple-900 px-2 py-1 rounded font-mono text-sm"
+                            {...props}
+                          />
+                        ) : (
+                          <code
+                            className="bg-gray-900 text-purple-300 px-4 py-3 rounded font-mono text-sm block overflow-x-auto my-3"
+                            {...props}
+                          />
+                        ),
+                      pre: ({ node, ...props }) => (
+                        <pre
+                          className="bg-gray-900 text-purple-300 px-4 py-3 rounded font-mono text-sm overflow-x-auto my-3"
+                          {...props}
+                        />
+                      ),
+                      hr: () => (
+                        <hr className="my-4 border-purple-300" />
                       ),
                     }}
                   >
