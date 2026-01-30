@@ -30,19 +30,23 @@ export const POST = async (request: Request) => {
 
 		const { overview, topics, resources } = parseGeneralInfo(generalInfo);
 
-		const structuredRoutine = dailyRoutines.map(
-			(content: string, index: number) => {
-				const header = content.split('\n')[0].trim();
+		console.log(dailyRoutines);
 
-				return {
-					day_number: index + 1,
-					title: header,
-					content: content,
-					is_completed: false,
-					completed_at: null,
-				};
-			},
-		);
+		const structuredRoutine = dailyRoutines.map((item: any, index: number) => {
+			// Access the 'content' property of the object
+			const rawContent = item.content || '';
+
+			// Now split the string
+			const header = rawContent.split('\n')[0].trim();
+
+			return {
+				day_number: item.dayNumber || index + 1, // Use the existing dayNumber
+				title: item.title || header, // Use existing title or extracted header
+				content: rawContent,
+				is_completed: false,
+				completed_at: null,
+			};
+		});
 
 		const { data: PlanData, error: PlanError } = await supabase
 			.from('studyPlans')
